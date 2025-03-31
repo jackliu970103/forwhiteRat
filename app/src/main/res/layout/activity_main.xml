@@ -59,6 +59,11 @@
         android:text="猜拳"
         tools:layout_editor_absoluteX="7dp"
         tools:layout_editor_absoluteY="258dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:id="@+id/result"
+        android:text="戰績"
+        android:layout_height="wrap_content"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -101,6 +106,15 @@
             android:text="電腦出拳"
             tools:layout_editor_absoluteX="213dp"
             tools:layout_editor_absoluteY="324dp" />
+        <Space
+            android:layout_width="40.dp"
+            android:layout_height="40.dp"/>
+
     </LinearLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:text="reset"
+        android:id="@+id/resetButton"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

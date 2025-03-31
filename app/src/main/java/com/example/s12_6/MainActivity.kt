@@ -1,10 +1,10 @@
 package com.example.s12_6
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.example.s12_6.R
 
 class MainActivity : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
@@ -12,14 +12,28 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // 確保 ID 與 XML 一致
-        val editTextName = findViewById<EditText>(R.id.editTextText) // 修正
+        val editTextName = findViewById<EditText>(R.id.editTextText)
         val radioGroup = findViewById<RadioGroup>(R.id.radiogroup)
-        val buttonPlay = findViewById<Button>(R.id.button) // 修正
-        val name =findViewById<TextView>(R.id.name)
-        val winner =findViewById<TextView>(R.id.winner)
-        val ichose =findViewById<TextView>(R.id.ichose)
-        val itchose=findViewById<TextView>(R.id.itchose)
+        val buttonPlay = findViewById<Button>(R.id.button)
+        val name = findViewById<TextView>(R.id.name)
+        val winner = findViewById<TextView>(R.id.winner)
+        val ichose = findViewById<TextView>(R.id.ichose)
+        val itchose = findViewById<TextView>(R.id.itchose)
+        val result = findViewById<TextView>(R.id.result)
+        val resetB = findViewById<Button>(R.id.resetButton)
+
+        var iWin = 0
+        var itWin = 0
+        var nowinner = 0
+
+        result.text = "戰績\n 勝:$iWin 敗:$itWin 平:$nowinner"
+
+        resetB.setOnClickListener {
+            iWin = 0
+            itWin = 0
+            nowinner = 0
+            result.text = "戰績\n 勝:$iWin 敗:$itWin 平:$nowinner"  // 更新 UI
+        }
 
         buttonPlay.setOnClickListener {
             val playerName = editTextName.text.toString().trim()
@@ -35,7 +49,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             val playerChoice = when (selectedOptionId) {
-                R.id.radioButton -> "剪刀"  // 確保 XML ID 正確
+                R.id.radioButton -> "剪刀"
                 R.id.radioButton2 -> "石頭"
                 R.id.radioButton3 -> "布"
                 else -> ""
@@ -44,18 +58,44 @@ class MainActivity : AppCompatActivity() {
             val choices = listOf("剪刀", "石頭", "布")
             val computerChoice = choices.random()
 
-            val result = when {
-                playerChoice == computerChoice -> "平手！"
+            val resultText = when {
+                playerChoice == computerChoice -> {
+                    nowinner++
+                    "平手！"
+                }
                 (playerChoice == "剪刀" && computerChoice == "布") ||
                         (playerChoice == "石頭" && computerChoice == "剪刀") ||
-                        (playerChoice == "布" && computerChoice == "石頭") -> "$playerName"
-                else -> "電腦獲勝！"
+                        (playerChoice == "布" && computerChoice == "石頭") -> {
+                    iWin++
+                    "$playerName 獲勝！"
+                }
+                else -> {
+                    itWin++
+                    "電腦獲勝！"
+                }
             }
-            name.text="名字\n${editTextName.text}"
-            winner.text="勝利者\n$result"
-            ichose.text="我方出拳\n$playerChoice"
-            itchose.text="電腦出拳\n$computerChoice"
+
+            val intent = Intent(this, secondActivity::class.java)
+            intent.putExtra("nowinner", nowinner)
+            intent.putExtra("win", iWin)
+            intent.putExtra("itwin", itWin)
+            if (iWin == 4) {
+                intent.putExtra("winner", playerName)
+                startActivity(intent)
+                finish()
+            } else if (itWin == 4) {
+                intent.putExtra("winner", "電腦")
+                startActivity(intent)
+                finish()
+            }
+
+
+
+            name.text = "名字\n$playerName"
+            winner.text = "勝利者\n$resultText"
+            ichose.text = "我方出拳\n$playerChoice"
+            itchose.text = "電腦出拳\n$computerChoice"
+            result.text = "戰績\n 勝:$iWin 敗:$itWin 平:$nowinner"
         }
     }
 }
-
